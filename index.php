@@ -28,6 +28,13 @@
 	/*Basta alterar o valor da variável responsável pelo valor do cookie, no caso, alterar a $valor_cookie*/
 	$valor_cookie = 'Pedro Augusto';/*novo valor*/
 	setcookie($nome_cookie, $valor_cookie);/*atribuindo valor no cookie*/
+
+	/*COMO COLOCAR DADOS INSERIDOS PELO USUÁRIO NOS COOKIES*/
+	if ($_POST) {/*Se o usuário clicar em Submit*/
+		$nome_cookie = 'Usuario';/*Nome do cookie*/
+		$valor_cookie = $_POST['nome'];/*novo valor do cookie*/
+		setcookie($nome_cookie, $valor_cookie, time() + (86400 * 30), '/Cookies');/*informando nome e valor do cookie, bem como sua expiração e seu local de destino, que é o mesmo do último valor*/
+	}
 ?>
 
 <html>
@@ -56,11 +63,14 @@
 		<h1><i class="fas fa-cookie-bite"></i> Trabalhando com Cookies</h1>
 	</div>
 </div>
-<div class="col-8 offset-2 bg-white corpo" align="center">
-	<br>
+<div class="col-8 offset-2 bg-white corpo">
+	<br><center>
 	<?php 
+	if ($_POST) { /*Se o usuário confirmar a entrega do formulário realizará as seguintes ações:*/
 
-		if(!isset($_COOKIE[$nome_cookie])) { /*Verifica se o cookie com o nome da variável $nome_cookie não foi iniciado com algum valor*/
+		$_COOKIE[$nome_cookie] = $_POST['nome']; /*será atribuido no cookie o valor digitado pelo usuário no campo 'nome'*/
+
+		if(!isset($_COOKIE[$nome_cookie])||$_COOKIE[$nome_cookie] == null) { /*Verifica se o cookie com o nome da variável $nome_cookie não foi iniciado com algum valor ou se o valor for nulo*/
 		  echo "<h4>O Cookie '" . $nome_cookie . "' não tem valor definido!</h4>"; /*Se não foi iniciado, irá aparecer apenas o nome do cookie.*/
 		} 
 		else {
@@ -78,7 +88,34 @@
 		  echo "<br></h4>Cookies estão desabilitados.</h4>";/*Se não houver cookies ativos, irá mostrar essa mensagem*/
 
 		}
-	?>
+	}
+	else{/*Se o usuário não entregar o formulário, irá apresentar as informações já inseridas nos cookies*/
+		if(!isset($_COOKIE[$nome_cookie])||$_COOKIE[$nome_cookie] == null) { /*Verifica se o cookie com o nome da variável $nome_cookie não foi iniciado com algum valor ou se o valor for nulo*/
+		  echo "<h4>O Cookie '" . $nome_cookie . "' não tem valor definido!</h4>"; /*Se não foi iniciado, irá aparecer apenas o nome do cookie.*/
+		} 
+		else {
+		  echo "<h4>Cookie '" . $nome_cookie . "' está definido!</h4><br>";
+		  echo "<h4>Seu valor é: " . $_COOKIE[$nome_cookie]."</h4>"; /*Se foi iniciado, irá apresentar o nome do cookie junto com seu valor.*/
+		}
+
+		if(count($_COOKIE) > 0) {/*Conta a quantidade de cookies ativados e verifica se são maiores que 0*/
+
+		  echo "<br><h4>Número de Cookies ativos: ". count($_COOKIE)."</h4>";/*Se houver um número mairo que 0, apresenta a quantidade de Cookies ativos*/
+
+		} 
+		else {
+
+		  echo "<br></h4>Cookies estão desabilitados.</h4>";/*Se não houver cookies ativos, irá mostrar essa mensagem*/
+
+		}
+	}
+	?></center>
+	<br>
+	<form method="post"><!--Inicia formulário com o método push-->
+	<h4>Nome:</h4>
+	<input type="text" name="nome" class="form-control" id="nome"><br><!--Campo de entrada de informações-->
+	<button type="submit" class="btn text-white" style="background: #00C851;">Enviar</button><!--Botão submit para enviar as informações inseridas pelo usuário ao código PHP-->
+	</form>
 </div>
 </body>
 </html>
